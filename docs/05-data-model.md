@@ -13,6 +13,7 @@ Represents scheduled activities related to a birthday.
 ````mermaid
 erDiagram
     USER ||--o{ BIRTHDAY : registers
+    USER ||--o{ SESSION : generates
     BIRTHDAY ||--o{ EVENT : has
 
     USER {
@@ -22,6 +23,14 @@ erDiagram
         string email
         string timezone
         BIRTHDAY[] birthdays
+        SESSION[] sessions
+    }
+    
+    SESSION {
+        UUID _id
+        string token
+        date createdAt
+        date expiresAt
     }
 
     BIRTHDAY {
@@ -47,6 +56,9 @@ erDiagram
 ## Considerations
 ### User's fields
 - password and email are encrypted.
+- 
+### Session's fields
+- token is encrypted.
 
 ### Birthday's fields
 - name, contactLinks, and wishlists are encrypted.

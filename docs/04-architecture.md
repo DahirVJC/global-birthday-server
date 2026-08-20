@@ -14,7 +14,7 @@ C4Context
             Container(mobile, "Mobile Application", "React Native", "Application for registering birthdays and events, and display them with a calendar-like view")
 
             System_Boundary(backend, "Backend") {
-                Container(api, "API", "Node.js / REST API", "Handles CRUD operations for birthdays, events, and wishlists")
+                Container(api, "API", "Go", "Handles CRUD operations for birthdays, events, and wishlists")
                 ContainerDb(mongodb, "MongoDB", "MongoDB", "Stores user accounts, birthday records, party events, and wishlist items")
             }
             Rel(user, mobile, "Uses")
@@ -27,3 +27,7 @@ C4Context
     UpdateRelStyle(mobile, api, $textColor="#fff", $lineColor="#fff")
     UpdateRelStyle(api, mongodb, $textColor="#fff", $lineColor="#fff")
 ````
+## Technology Stack Justification
+- React Native delivers cross-platform mobile reach without sacrificing near-native UX for calendar interfaces and forms.
+- Go provides unmatched timezone handling precision and performance for calculating intervals across multiple Daylight Saving Time boundaries.
+- MongoDB offers the schema flexibility needed for variable wishlist data and embedded events while scaling horizontally.
