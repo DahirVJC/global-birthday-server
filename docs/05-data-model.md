@@ -14,12 +14,14 @@ Represents scheduled activities related to a birthday.
 erDiagram
     USER ||--o{ BIRTHDAY : registers
     USER ||--o{ SESSION : generates
+    USER ||--o{ AUTH : generates
     BIRTHDAY ||--o{ EVENT : has
 
     USER {
         UUID _id
         string name
         string password
+        string encryptionKey
         string email
         string timezone
         BIRTHDAY[] birthdays
@@ -28,7 +30,17 @@ erDiagram
     
     SESSION {
         UUID _id
+        string accessToken
+        string refreshToken
+        date createdAt
+        date expiresAt
+    }
+
+    AUTH {
+        UUID _id
+        string email
         string token
+        short type
         date createdAt
         date expiresAt
     }
@@ -55,10 +67,16 @@ erDiagram
 
 ## Considerations
 ### User's fields
-- password and email are encrypted.
-- 
+- password, encryption key, and email are encrypted.
+
 ### Session's fields
+- accessToken and refreshToken are encrypted.
+
+### Auth's fields
 - token is encrypted.
+- type is an enum:
+  - 0: email verification token
+  - 1: reset password token
 
 ### Birthday's fields
 - name, contactLinks, and wishlists are encrypted.
