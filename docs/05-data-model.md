@@ -1,6 +1,7 @@
 # Data Model
 
 ## Entities
+
 ### USER
 Represents an account holder who manages birthday, reminders, and events.
 
@@ -9,6 +10,8 @@ Represents a person whose birthday is being tracked.
 
 ### EVENT
 Represents scheduled activities related to a birthday.
+
+## ER Diagram
 
 ````mermaid
 erDiagram
@@ -66,6 +69,7 @@ erDiagram
 ````
 
 ## Considerations
+
 ### User's fields
 - password, encryption key, and email are encrypted.
 

@@ -67,7 +67,7 @@
   - Deletes the specified birthday
   - Returns 200 if successful
 
-## Event Birthday
+## Event Endpoints
 
 - `GET` `event/`:
   - Receives a valid access token

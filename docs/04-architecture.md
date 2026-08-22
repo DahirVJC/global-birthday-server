@@ -1,4 +1,6 @@
 # Architecture
+
+## C4 Model
 Users interact with the mobile app, which communicates with the Node.js REST API via HTTPS/JSON requests. The API then performs read/write operations on the MongoDB database.
 
 ````mermaid
