@@ -144,3 +144,7 @@
     - date: "2000/01/01"
     - bool: false
   - Returns 200 if successful
+
+## Other Endpoints
+- `GET` `/status/`
+  - Returns "Server is up."
