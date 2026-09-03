@@ -27,7 +27,7 @@ erDiagram
         string encryptionKey
         string email
         string timezone
-        BIRTHDAY[] birthdays
+        UUID[] birthdays
         SESSION[] sessions
     }
     
@@ -56,7 +56,7 @@ erDiagram
         date remindMeIn
         string[] contactLinks
         string[] wishlists
-        EVENT[] events
+        UUID[] events
     }
 
     EVENT {
