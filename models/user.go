@@ -24,3 +24,12 @@ type Session struct {
 	CreatedAt    time.Time `bson:"created_at"`
 	ExpiresAt    time.Time `bson:"expires_at"`
 }
+
+type Auth struct {
+	ID        uuid.UUID `bson:"_id"`
+	Email     string    `bson:"email"`
+	Token     string    `bson:"token"`
+	Type      int16     `bson:"type"`
+	CreatedAt time.Time `bson:"created_at"`
+	ExpiresAt time.Time `bson:"expires_at"`
+}
