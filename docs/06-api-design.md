@@ -13,16 +13,9 @@
   
 - `PUT` `user/me/`: 
   - Receives a valid access token
-  - Receives new user's information (except password)
+  - Receives new user's information
   - Changes the user's information
   - Returns 201 if successful
-  
-- `PATCH` `user/me/password`:
-  - Receives a valid access token
-  - Receives old and new passwords
-  - Replaces the user's old password and encryption key with new values
-  - Encrypted information is decrypted and re-encrypted with the new encryption key
-  - Returns 200 if successful
   
 - `Delete` `user/me/`
   - Receives a valid access token
