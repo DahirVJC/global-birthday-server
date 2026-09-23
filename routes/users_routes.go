@@ -12,5 +12,9 @@ func RegisterUsersRoutes(
 	users := router.Group("/users")
 	{
 		users.GET("/", userController.GetUsers)
+		users.GET("/me", userController.GetUser)
+		users.POST("/", userController.PostUser)
+		users.PUT("/me")
+		users.DELETE("/me", userController.DeleteUser)
 	}
 }

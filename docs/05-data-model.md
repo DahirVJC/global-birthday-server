@@ -33,7 +33,6 @@ erDiagram
     SESSION {
         UUID _id
         string accessToken
-        string refreshToken
         date createdAt
         date expiresAt
     }
@@ -70,13 +69,13 @@ erDiagram
 ## Considerations
 
 ### User's fields
-- password, and email are encrypted.
+- password is hashed, and email is encrypted.
 
 ### Session's fields
-- accessToken and refreshToken are encrypted.
+- accessToken is hashed.
 
 ### Auth's fields
-- token is encrypted.
+- token is hashed.
 - type is an enum:
   - 0: email verification token
   - 1: reset password token

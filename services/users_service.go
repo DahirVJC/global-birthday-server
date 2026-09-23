@@ -7,12 +7,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserService struct {
-	repo repositories.UserRepository
+type UsersService struct {
+	repo repositories.UsersRepository
 }
 
-func NewUsersService(repo repositories.UserRepository) *UserService {
-	return &UserService{
+func NewUsersService(repo repositories.UsersRepository) *UsersService {
+	return &UsersService{
 		repo: repo,
 	}
 }
@@ -46,7 +46,7 @@ func toUserDb(userReq models.UserReq) models.User {
 	return user
 }
 
-func (us UserService) GetById(id uuid.UUID) (*models.UserRes, error) {
+func (us UsersService) GetById(id uuid.UUID) (*models.UserRes, error) {
 	userDb, err := us.repo.GetById(id)
 
 	if err != nil {
@@ -56,7 +56,7 @@ func (us UserService) GetById(id uuid.UUID) (*models.UserRes, error) {
 	return toUserRes(userDb), nil
 }
 
-func (us UserService) Get() ([]*models.UserRes, error) {
+func (us UsersService) Get() ([]*models.UserRes, error) {
 	usersDb, err := us.repo.Get()
 
 	if err != nil {
@@ -72,18 +72,18 @@ func (us UserService) Get() ([]*models.UserRes, error) {
 	return users, nil
 }
 
-func (us UserService) Create(user models.UserReq) error {
+func (us UsersService) Create(user models.UserReq) error {
 	userDb := toUserDb(user)
 
 	return us.repo.Create(userDb)
 }
 
-func (us UserService) Update(id uuid.UUID, user models.UserReq) error {
+func (us UsersService) Update(id uuid.UUID, user models.UserReq) error {
 	userDb := toUserDb(user)
 
 	return us.repo.Update(id, userDb)
 }
 
-func (us UserService) Delete(id uuid.UUID) error {
+func (us UsersService) Delete(id uuid.UUID) error {
 	return us.repo.Delete(id)
 }

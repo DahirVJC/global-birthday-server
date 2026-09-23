@@ -17,11 +17,10 @@ type User struct {
 }
 
 type Session struct {
-	ID           uuid.UUID `bson:"_id"`
-	AccessToken  string    `bson:"access_token"`
-	RefreshToken string    `bson:"refresh_token"`
-	CreatedAt    time.Time `bson:"created_at"`
-	ExpiresAt    time.Time `bson:"expires_at"`
+	ID          uuid.UUID `bson:"_id"`
+	AccessToken string    `bson:"access_token"`
+	CreatedAt   time.Time `bson:"created_at"`
+	ExpiresAt   time.Time `bson:"expires_at"`
 }
 
 type Auth struct {
