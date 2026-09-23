@@ -129,7 +129,7 @@
 
 - `POST` `/auth/reset-password`
   - Receives a valid password reset token and a new password
-  - Updates the user's password, email and encryption key, and invalidates the password reset token
+  - Updates the user's password and email, invalidating the password reset token
     - User's password turns into the new password and the user's email is replaced by the one stored in the auth token encrypted by the new encryption key
   - Warning: deletes all encrypted optional data and replaces mandatory fields with a default value according to its type:
     - string: "-"

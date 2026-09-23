@@ -7,14 +7,13 @@ import (
 )
 
 type User struct {
-	ID            uuid.UUID `bson:"_id"`
-	Name          string    `bson:"name"`
-	Password      string    `bson:"password"`
-	EncryptionKey string    `bson:"encryption_key"`
-	Email         string    `bson:"email"`
-	Timezone      string    `bson:"timezone"`
-	Birthdays     []string  `bson:"birthdays"`
-	Sessions      []Session `bson:"sessions"`
+	ID        uuid.UUID `bson:"_id"`
+	Name      string    `bson:"name"`
+	Password  string    `bson:"password"`
+	Email     string    `bson:"email"`
+	Timezone  string    `bson:"timezone"`
+	Birthdays []string  `bson:"birthdays"`
+	Sessions  []Session `bson:"sessions"`
 }
 
 type Session struct {

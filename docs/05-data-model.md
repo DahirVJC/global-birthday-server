@@ -24,7 +24,6 @@ erDiagram
         UUID _id
         string name
         string password
-        string encryptionKey
         string email
         string timezone
         UUID[] birthdays
@@ -71,7 +70,7 @@ erDiagram
 ## Considerations
 
 ### User's fields
-- password, encryption key, and email are encrypted.
+- password, and email are encrypted.
 
 ### Session's fields
 - accessToken and refreshToken are encrypted.
