@@ -9,11 +9,11 @@ import (
 )
 
 type UsersController struct {
-	usersService    services.UsersService
-	sessionsService services.SessionsService
+	usersService    *services.UsersService
+	sessionsService *services.SessionsService
 }
 
-func NewUsersController(userService services.UsersService, sessionService services.SessionsService) *UsersController {
+func NewUsersController(userService *services.UsersService, sessionService *services.SessionsService) *UsersController {
 	return &UsersController{
 		usersService: userService,
 	}

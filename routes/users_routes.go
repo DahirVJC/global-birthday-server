@@ -8,13 +8,13 @@ import (
 
 func RegisterUsersRoutes(
 	router *gin.RouterGroup,
-	userController *controllers.UsersController) {
+	usersController *controllers.UsersController) {
 	users := router.Group("/users")
 	{
-		users.GET("/", userController.GetUsers)
-		users.GET("/me", userController.GetUser)
-		users.POST("/", userController.PostUser)
-		users.PUT("/me")
-		users.DELETE("/me", userController.DeleteUser)
+		users.GET("/", usersController.GetUsers)
+		users.GET("/me", usersController.GetUser)
+		users.POST("/", usersController.PostUser)
+		users.PUT("/me", usersController.PutUser)
+		users.DELETE("/me", usersController.DeleteUser)
 	}
 }

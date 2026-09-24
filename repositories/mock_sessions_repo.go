@@ -12,8 +12,8 @@ type MockSessionsRepository struct {
 	users []models.User
 }
 
-func NewMockSessionsController(initialUsers []models.User) *MockSessionsRepository {
-	return &MockSessionsRepository{
+func NewMockSessionsController(initialUsers []models.User) MockSessionsRepository {
+	return MockSessionsRepository{
 		users: initialUsers,
 	}
 }
@@ -26,7 +26,7 @@ func (sr MockSessionsRepository) Validate(hashedToken string) bool {
 	})
 }
 
-func (sr MockSessionsRepository) GetUserID(hashedToken string) (uuid.UUID, error) {
+func (sr MockSessionsRepository) GetUserId(hashedToken string) (uuid.UUID, error) {
 	idx := slices.IndexFunc(sr.users, func(user models.User) bool {
 		return slices.ContainsFunc(user.Sessions, func(session models.Session) bool {
 			return session.AccessToken == hashedToken

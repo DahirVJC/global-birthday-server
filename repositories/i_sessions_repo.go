@@ -7,7 +7,7 @@ import (
 )
 
 type SessionsRepository interface {
-	Validate(accessToken string) bool
-	GetUserId(accessToken string) (uuid.UUID, error)
+	Validate(hashedToken string) bool
+	GetUserId(hashedToken string) (uuid.UUID, error)
 	Add(userId uuid.UUID, session models.Session) error
 }
