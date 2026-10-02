@@ -7,7 +7,7 @@ import (
 )
 
 type UsersRepository interface {
-	Get() ([]*models.User, error)
+	Get() (*[]models.User, error)
 	GetById(id uuid.UUID) (*models.User, error)
 	Create(user models.User) error
 	Update(id uuid.UUID, user models.User) error

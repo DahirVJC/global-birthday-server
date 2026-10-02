@@ -22,7 +22,7 @@ func NewUsersController() *DbUsersRepository {
 	}
 }
 
-func (ur DbUsersRepository) Get() ([]*models.User, error) {
+func (ur DbUsersRepository) Get() (*[]models.User, error) {
 	return nil, nil
 }
 

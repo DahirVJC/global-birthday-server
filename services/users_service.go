@@ -17,12 +17,8 @@ func NewUsersService(repo repositories.UsersRepository) *UsersService {
 	}
 }
 
-func toUserRes(userDb *models.User) *models.UserRes {
-	if userDb == nil {
-		return nil
-	}
-
-	res := &models.UserRes{
+func toUserRes(userDb models.User) models.UserRes {
+	res := models.UserRes{
 		ID:       userDb.ID,
 		Name:     userDb.Name,
 		Email:    userDb.Email,
@@ -49,27 +45,29 @@ func toUserDb(userReq models.UserReq) models.User {
 func (us UsersService) GetById(id uuid.UUID) (*models.UserRes, error) {
 	userDb, err := us.repo.GetById(id)
 
-	if err != nil {
+	if err != nil || userDb == nil {
 		return nil, err
 	}
 
-	return toUserRes(userDb), nil
+	userRes := toUserRes(*userDb)
+
+	return &userRes, nil
 }
 
-func (us UsersService) Get() ([]*models.UserRes, error) {
+func (us UsersService) Get() (*[]models.UserRes, error) {
 	usersDb, err := us.repo.Get()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var users []*models.UserRes
+	var users []models.UserRes
 
-	for _, userDb := range usersDb {
+	for _, userDb := range *usersDb {
 		users = append(users, toUserRes(userDb))
 	}
 
-	return users, nil
+	return &users, nil
 }
 
 func (us UsersService) Create(user models.UserReq) error {

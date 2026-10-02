@@ -9,75 +9,63 @@ import (
 )
 
 type MockUsersRepository struct {
-	users []models.User
+	users *[]models.User
 }
 
-func NewMockUsersController(initialUsers []models.User) MockUsersRepository {
+func NewMockUsersController(initialUsers *[]models.User) MockUsersRepository {
 	return MockUsersRepository{
 		users: initialUsers,
 	}
 }
 
-func toUserRef(users []models.User) []*models.User {
-	result := make([]*models.User, 0, len(users))
-
-	for i := range users {
-		result = append(result, &users[i])
-	}
-
-	return result
-}
-
-func (ur MockUsersRepository) Get() ([]*models.User, error) {
-	refUsers := toUserRef(ur.users)
-
-	return refUsers, nil
+func (ur MockUsersRepository) Get() (*[]models.User, error) {
+	return ur.users, nil
 }
 
 func (ur MockUsersRepository) GetById(id uuid.UUID) (*models.User, error) {
-	refUsers := toUserRef(ur.users)
-
-	idx := slices.IndexFunc(refUsers, func(u *models.User) bool { return u.ID == id })
+	idx := slices.IndexFunc(*ur.users, func(u models.User) bool { return u.ID == id })
 
 	if idx == -1 {
 		return nil, fmt.Errorf("user with ID %s not found", id)
 	}
 
-	return refUsers[idx], nil
+	return &(*ur.users)[idx], nil
 }
 
 func (ur MockUsersRepository) Create(user models.User) error {
-	ur.users = append(ur.users, user)
+	newUsers := append(*ur.users, user)
+	*ur.users = newUsers
 
 	return nil
 }
 
 func (ur MockUsersRepository) Update(id uuid.UUID, user models.User) error {
-	idx := slices.IndexFunc(ur.users, func(u models.User) bool { return u.ID == id })
+	idx := slices.IndexFunc(*ur.users, func(u models.User) bool { return u.ID == id })
 
 	if idx == -1 {
 		return fmt.Errorf("user with ID %s not found", id)
 	}
 
-	ur.users[idx] = user
+	(*ur.users)[idx] = user
 
 	return nil
 }
 
 func (ur MockUsersRepository) Delete(id uuid.UUID) error {
-	idx := slices.IndexFunc(ur.users, func(u models.User) bool { return u.ID == id })
+	idx := slices.IndexFunc(*ur.users, func(u models.User) bool { return u.ID == id })
 
 	if idx == -1 {
 		return fmt.Errorf("user with ID %s not found", id)
 	}
 
-	ur.users = slices.Delete(ur.users, idx, idx+1)
+	newUsers := slices.Delete(*ur.users, idx, idx+1)
+	*ur.users = newUsers
 
 	return nil
 }
 
 func (ur MockUsersRepository) Exists(id uuid.UUID) (bool, error) {
-	return slices.ContainsFunc(ur.users, func(user models.User) bool {
+	return slices.ContainsFunc(*ur.users, func(user models.User) bool {
 		return user.ID == id
 	}), nil
 }

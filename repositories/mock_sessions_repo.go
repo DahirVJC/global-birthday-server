@@ -9,17 +9,17 @@ import (
 )
 
 type MockSessionsRepository struct {
-	users []models.User
+	users *[]models.User
 }
 
-func NewMockSessionsController(initialUsers []models.User) MockSessionsRepository {
+func NewMockSessionsController(initialUsers *[]models.User) MockSessionsRepository {
 	return MockSessionsRepository{
 		users: initialUsers,
 	}
 }
 
 func (sr MockSessionsRepository) Validate(hashedToken string) bool {
-	return slices.ContainsFunc(sr.users, func(user models.User) bool {
+	return slices.ContainsFunc(*sr.users, func(user models.User) bool {
 		return slices.ContainsFunc(user.Sessions, func(session models.Session) bool {
 			return session.AccessToken == hashedToken
 		})
@@ -27,7 +27,7 @@ func (sr MockSessionsRepository) Validate(hashedToken string) bool {
 }
 
 func (sr MockSessionsRepository) GetUserId(hashedToken string) (uuid.UUID, error) {
-	idx := slices.IndexFunc(sr.users, func(user models.User) bool {
+	idx := slices.IndexFunc(*sr.users, func(user models.User) bool {
 		return slices.ContainsFunc(user.Sessions, func(session models.Session) bool {
 			return session.AccessToken == hashedToken
 		})
@@ -40,22 +40,22 @@ func (sr MockSessionsRepository) GetUserId(hashedToken string) (uuid.UUID, error
 		)
 	}
 
-	return sr.users[idx].ID, nil
+	return (*sr.users)[idx].ID, nil
 }
 
 func (sr MockSessionsRepository) Add(userId uuid.UUID, session models.Session) error {
-	idx := slices.IndexFunc(sr.users, func(user models.User) bool {
-		return user.ID == userId
+	users := *sr.users
+
+	idx := slices.IndexFunc(users, func(u models.User) bool {
+		return u.ID == userId
 	})
 
 	if idx == -1 {
-		return fmt.Errorf(
-			"user with ID %s not found",
-			userId,
-		)
+		return fmt.Errorf("user with ID %s not found", userId)
 	}
 
-	sr.users[idx].Sessions = append(sr.users[idx].Sessions, session)
+	users[idx].Sessions = append(users[idx].Sessions, session)
 
+	*sr.users = users
 	return nil
 }

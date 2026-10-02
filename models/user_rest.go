@@ -5,10 +5,10 @@ import (
 )
 
 type UserReq struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Timezone string `json:"timezone"`
+	Name     string `json:"name" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Timezone string `json:"timezone" binding:"required"`
 }
 
 type UserRes struct {

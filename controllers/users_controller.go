@@ -33,9 +33,10 @@ func (uc *UsersController) GetUser(c *gin.Context) {
 
 	user, err := uc.usersService.GetById(userId)
 	if err != nil {
-		c.JSON(http.StatusOK, *user)
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		return
 	}
-
+	c.JSON(http.StatusOK, user)
 }
 
 func (uc *UsersController) GetUsers(c *gin.Context) {
@@ -54,7 +55,8 @@ func (uc *UsersController) GetUsers(c *gin.Context) {
 func (uc *UsersController) PostUser(c *gin.Context) {
 	var newUser models.UserReq
 
-	if err := c.BindJSON(&newUser); err != nil {
+	if err := c.ShouldBindJSON(&newUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
