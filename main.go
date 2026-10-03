@@ -14,8 +14,8 @@ func main() {
 	statusController := controllers.NewStatusController()
 
 	initialUsers := make([]models.User, 0)
-	usersRepo := repositories.NewMockUsersController(initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(initialUsers)
+	usersRepo := repositories.NewMockUsersController(&initialUsers)
+	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
 	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
 	usersService := services.NewUsersService(usersRepo)
 	usersController := controllers.NewUsersController(usersService, sessionsService)

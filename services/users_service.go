@@ -77,7 +77,17 @@ func (us UsersService) Create(user models.UserReq) error {
 }
 
 func (us UsersService) Update(id uuid.UUID, user models.UserReq) error {
+	existingUser, err := us.repo.GetById(id)
+
+	if err != nil {
+		return err
+	}
+
 	userDb := toUserDb(user)
+
+	userDb.ID = existingUser.ID
+	userDb.Birthdays = existingUser.Birthdays
+	userDb.Sessions = existingUser.Sessions
 
 	return us.repo.Update(id, userDb)
 }

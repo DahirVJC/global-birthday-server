@@ -26,7 +26,7 @@ func (ss SessionsService) Validate(accessToken string) bool {
 	return ss.sessionsRepo.Validate(utilities.ToHash(accessToken))
 }
 
-func (ss SessionsService) GetUserId(accessToken string) (uuid.UUID, error) {
+func (ss SessionsService) GetUser(accessToken string) (uuid.UUID, error) {
 	return ss.sessionsRepo.GetUserId(utilities.ToHash(accessToken))
 }
 
@@ -48,7 +48,7 @@ func (ss SessionsService) Create(userId uuid.UUID) (uuid.UUID, error) {
 
 	newSession := models.Session{
 		ID:          uuid.New(),
-		AccessToken: utilities.ToHash(token), // Store only the hash
+		AccessToken: utilities.ToHash(token),
 		CreatedAt:   time.Now().UTC(),
 		ExpiresAt:   time.Now().UTC().Add(90 * 24 * time.Hour),
 	}

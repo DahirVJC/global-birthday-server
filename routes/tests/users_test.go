@@ -8,11 +8,13 @@ import (
 	"global-birthday-server/repositories"
 	"global-birthday-server/services"
 	"global-birthday-server/startup"
+	"global-birthday-server/utilities"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"sort"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -52,7 +54,44 @@ func getMockUsers() []models.User {
 	}
 }
 
-func TestGetUserRoute(t *testing.T) {
+func getMockUsersWithSessions() []models.User {
+	return []models.User{
+		{
+			ID:        uuid.MustParse("11111111-1111-1111-1111-111111111111"),
+			Name:      "Alice Nguyen",
+			Password:  "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+			Email:     "alice.nguyen@example.com",
+			Timezone:  "America/New_York",
+			Birthdays: nil,
+			Sessions: []models.Session{
+				{
+					ID:          uuid.MustParse("33333333-3333-3333-3333-333333333333"),
+					AccessToken: utilities.ToHash("8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI"),
+					CreatedAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC),
+					ExpiresAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC).Add(90 * 24 * time.Hour),
+				},
+			},
+		},
+		{
+			ID:        uuid.MustParse("22222222-2222-2222-2222-222222222222"),
+			Name:      "Bob Mercado",
+			Password:  "$2a$10$X7trdoO6c2Ym0XWR1vNXVeWbnqZ6yNlTeqrMc0BpeDBMdCvQRtszi",
+			Email:     "bob.mercado@example.com",
+			Timezone:  "Europe/Lisbon",
+			Birthdays: nil,
+			Sessions: []models.Session{
+				{
+					ID:          uuid.MustParse("d3b07384-0c23-4e7a-8c9b-2c4a5f6e7b9c"),
+					AccessToken: utilities.ToHash("Z_TIeQlFa-KqzusUn5div552Rt-cND7vlBOB8fFbR4s"),
+					CreatedAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC),
+					ExpiresAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC).Add(90 * 24 * time.Hour),
+				},
+			},
+		},
+	}
+}
+
+func TestGetUsersRoute(t *testing.T) {
 	initialUsers := getMockUsers()
 	usersRepo := repositories.NewMockUsersController(&initialUsers)
 	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
@@ -92,6 +131,53 @@ func TestGetUserRoute(t *testing.T) {
 
 	assert.JSONEq(t, expectedJSON, w.Body.String())
 }
+
+func TestGetUserRoute(t *testing.T) {
+	initialUsers := getMockUsersWithSessions()
+	usersRepo := repositories.NewMockUsersController(&initialUsers)
+	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
+	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
+	usersService := services.NewUsersService(usersRepo)
+	usersController := controllers.NewUsersController(usersService, sessionsService)
+	statusController := controllers.NewStatusController()
+
+	router := startup.SetupRouter(statusController, usersController)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
+	req.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
+	router.ServeHTTP(w, req)
+
+	require.Equal(t, http.StatusOK, w.Code, "Status code should be OK (GET)")
+
+	expectedJSON := `
+        {
+            "_id": "11111111-1111-1111-1111-111111111111",
+            "name": "Alice Nguyen",
+            "email": "alice.nguyen@example.com",
+            "timezone": "America/New_York"
+        }`
+
+	assert.JSONEq(t, expectedJSON, w.Body.String())
+}
+
+func TestGetUserNotFoundRoute(t *testing.T) {
+	initialUsers := getMockUsersWithSessions()
+	usersRepo := repositories.NewMockUsersController(&initialUsers)
+	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
+	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
+	usersService := services.NewUsersService(usersRepo)
+	usersController := controllers.NewUsersController(usersService, sessionsService)
+	statusController := controllers.NewStatusController()
+
+	router := startup.SetupRouter(statusController, usersController)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
+	req.Header.Set("access-token", "123")
+	router.ServeHTTP(w, req)
+
+	require.Equal(t, http.StatusNotFound, w.Code, "Status code should be not found (GET)")
+}
+
 func TestPostUserRoute(t *testing.T) {
 	initialUsers := getMockUsers()
 	usersRepo := repositories.NewMockUsersController(&initialUsers)
@@ -172,4 +258,77 @@ func TestPostUserRoute(t *testing.T) {
 		assert.Equal(t, expectedUsers[idx].Email, user.Email, "User email should be equal")
 		assert.Equal(t, expectedUsers[idx].Timezone, user.Timezone, "User timezone should be equal")
 	}
+}
+
+func TestPutUserRoute(t *testing.T) {
+	initialUsers := getMockUsersWithSessions()
+	usersRepo := repositories.NewMockUsersController(&initialUsers)
+	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
+	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
+	usersService := services.NewUsersService(usersRepo)
+	usersController := controllers.NewUsersController(usersService, sessionsService)
+	statusController := controllers.NewStatusController()
+	router := startup.SetupRouter(statusController, usersController)
+
+	newUser := models.UserReq{
+		Name:     "User Test",
+		Password: "!15b2DwMEC^o9D",
+		Email:    "test@example.com",
+		Timezone: "America/Los_Angeles",
+	}
+
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(newUser)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	putRecorder := httptest.NewRecorder()
+	putReq, _ := http.NewRequest(http.MethodPut, "/api/users/me", &buf)
+	putReq.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
+	router.ServeHTTP(putRecorder, putReq)
+
+	require.Equal(t, http.StatusOK, putRecorder.Code, "Status code should be OK (PUT)")
+
+	getRecorder := httptest.NewRecorder()
+	getReq, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
+	getReq.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
+	router.ServeHTTP(getRecorder, getReq)
+
+	require.Equal(t, http.StatusOK, getRecorder.Code, "Status code should be OK (GET)")
+
+	expectedJSON := `
+        {
+            "_id": "11111111-1111-1111-1111-111111111111",
+            "name": "User Test",
+            "email": "test@example.com",
+            "timezone": "America/Los_Angeles"
+        }`
+
+	assert.JSONEq(t, expectedJSON, getRecorder.Body.String())
+}
+
+func TestDeleteUserRoute(t *testing.T) {
+	initialUsers := getMockUsersWithSessions()
+	usersRepo := repositories.NewMockUsersController(&initialUsers)
+	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
+	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
+	usersService := services.NewUsersService(usersRepo)
+	usersController := controllers.NewUsersController(usersService, sessionsService)
+	statusController := controllers.NewStatusController()
+	router := startup.SetupRouter(statusController, usersController)
+
+	deleteRecorder := httptest.NewRecorder()
+	deleteReq, _ := http.NewRequest(http.MethodDelete, "/api/users/me", nil)
+	deleteReq.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
+	router.ServeHTTP(deleteRecorder, deleteReq)
+
+	require.Equal(t, http.StatusOK, deleteRecorder.Code, "Status code should be OK (DELETE)")
+
+	getRecorder := httptest.NewRecorder()
+	getReq, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
+	getReq.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
+	router.ServeHTTP(getRecorder, getReq)
+
+	assert.Equal(t, http.StatusNotFound, getRecorder.Code, "Status code should be 404 (GET)")
 }

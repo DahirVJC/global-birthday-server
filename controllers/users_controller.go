@@ -15,27 +15,28 @@ type UsersController struct {
 
 func NewUsersController(userService *services.UsersService, sessionService *services.SessionsService) *UsersController {
 	return &UsersController{
-		usersService: userService,
+		usersService:    userService,
+		sessionsService: sessionService,
 	}
 }
 
 func (uc *UsersController) GetUser(c *gin.Context) {
 	accessToken := c.GetHeader("access-token")
 
-	userId, err := uc.sessionsService.GetUserId(accessToken)
+	userId, err := uc.sessionsService.GetUser(accessToken)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "token didn't return an user ID",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 
 	user, err := uc.usersService.GetById(userId)
+
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+		parseAndRespond(c, err)
 		return
 	}
+
 	c.JSON(http.StatusOK, user)
 }
 
@@ -43,9 +44,7 @@ func (uc *UsersController) GetUsers(c *gin.Context) {
 	users, err := uc.usersService.Get()
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to get users",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 
@@ -56,7 +55,7 @@ func (uc *UsersController) PostUser(c *gin.Context) {
 	var newUser models.UserReq
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		parseAndRespond(c, err)
 		return
 	}
 
@@ -66,27 +65,24 @@ func (uc *UsersController) PostUser(c *gin.Context) {
 func (uc *UsersController) PutUser(c *gin.Context) {
 	accessToken := c.GetHeader("access-token")
 
-	userId, err := uc.sessionsService.GetUserId(accessToken)
+	userId, err := uc.sessionsService.GetUser(accessToken)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "token didn't return an user ID",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 
 	var newUserData models.UserReq
 
 	if err := c.BindJSON(&newUserData); err != nil {
+		parseAndRespond(c, err)
 		return
 	}
 
 	errPut := uc.usersService.Update(userId, newUserData)
 
 	if errPut != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to update user",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 }
@@ -94,21 +90,17 @@ func (uc *UsersController) PutUser(c *gin.Context) {
 func (uc *UsersController) DeleteUser(c *gin.Context) {
 	accessToken := c.GetHeader("access-token")
 
-	userId, err := uc.sessionsService.GetUserId(accessToken)
+	userId, err := uc.sessionsService.GetUser(accessToken)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "token didn't return an user ID",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 
 	errDel := uc.usersService.Delete(userId)
 
 	if errDel != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete user",
-		})
+		parseAndRespond(c, err)
 		return
 	}
 }
