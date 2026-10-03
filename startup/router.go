@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
+func SetupRouter(statusController *controllers.StatusController, usersController *controllers.UsersController) *gin.Engine {
 	router := gin.Default()
-	statusController := controllers.NewStatusController()
 
 	routes.RegisterRoutes(
 		router,
 		statusController,
+		usersController,
 	)
 
 	return router
