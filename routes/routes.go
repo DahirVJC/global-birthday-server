@@ -8,8 +8,10 @@ import (
 
 func RegisterRoutes(
 	router *gin.Engine,
-	statusController *controllers.StatusController) {
+	statusController *controllers.StatusController,
+	usersController *controllers.UsersController) {
 	api := router.Group("/api")
 
 	RegisterStatusRoutes(api, statusController)
+	RegisterUsersRoutes(api, usersController)
 }

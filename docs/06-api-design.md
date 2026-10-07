@@ -13,16 +13,9 @@
   
 - `PUT` `user/me/`: 
   - Receives a valid access token
-  - Receives new user's information (except password)
+  - Receives new user's information
   - Changes the user's information
   - Returns 201 if successful
-  
-- `PATCH` `user/me/password`:
-  - Receives a valid access token
-  - Receives old and new passwords
-  - Replaces the user's old password and encryption key with new values
-  - Encrypted information is decrypted and re-encrypted with the new encryption key
-  - Returns 200 if successful
   
 - `Delete` `user/me/`
   - Receives a valid access token
@@ -136,7 +129,7 @@
 
 - `POST` `/auth/reset-password`
   - Receives a valid password reset token and a new password
-  - Updates the user's password, email and encryption key, and invalidates the password reset token
+  - Updates the user's password and email, invalidating the password reset token
     - User's password turns into the new password and the user's email is replaced by the one stored in the auth token encrypted by the new encryption key
   - Warning: deletes all encrypted optional data and replaces mandatory fields with a default value according to its type:
     - string: "-"

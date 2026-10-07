@@ -24,17 +24,15 @@ erDiagram
         UUID _id
         string name
         string password
-        string encryptionKey
         string email
         string timezone
-        BIRTHDAY[] birthdays
+        UUID[] birthdays
         SESSION[] sessions
     }
     
     SESSION {
         UUID _id
         string accessToken
-        string refreshToken
         date createdAt
         date expiresAt
     }
@@ -56,7 +54,7 @@ erDiagram
         date remindMeIn
         string[] contactLinks
         string[] wishlists
-        EVENT[] events
+        UUID[] events
     }
 
     EVENT {
@@ -71,13 +69,13 @@ erDiagram
 ## Considerations
 
 ### User's fields
-- password, encryption key, and email are encrypted.
+- password is hashed, and email is encrypted.
 
 ### Session's fields
-- accessToken and refreshToken are encrypted.
+- accessToken is hashed.
 
 ### Auth's fields
-- token is encrypted.
+- token is hashed.
 - type is an enum:
   - 0: email verification token
   - 1: reset password token

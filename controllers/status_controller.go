@@ -13,5 +13,5 @@ func NewStatusController() *StatusController {
 }
 
 func (*StatusController) GetStatus(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, "Server is up.")
+	c.String(http.StatusOK, "Server is up.")
 }
