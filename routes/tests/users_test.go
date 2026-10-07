@@ -3,11 +3,7 @@ package routes_tests
 import (
 	"bytes"
 	"encoding/json"
-	"global-birthday-server/controllers"
 	"global-birthday-server/models"
-	"global-birthday-server/repositories"
-	"global-birthday-server/services"
-	"global-birthday-server/startup"
 	"global-birthday-server/utilities"
 	"log"
 	"net/http"
@@ -93,14 +89,8 @@ func getMockUsersWithSessions() []models.User {
 
 func TestGetUsersRoute(t *testing.T) {
 	initialUsers := getMockUsers()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/api/users/", nil)
@@ -134,14 +124,8 @@ func TestGetUsersRoute(t *testing.T) {
 
 func TestGetUserRoute(t *testing.T) {
 	initialUsers := getMockUsersWithSessions()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
 	req.Header.Set("access-token", "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI")
@@ -162,14 +146,8 @@ func TestGetUserRoute(t *testing.T) {
 
 func TestGetUserNotFoundRoute(t *testing.T) {
 	initialUsers := getMockUsersWithSessions()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/api/users/me", nil)
 	req.Header.Set("access-token", "123")
@@ -180,14 +158,8 @@ func TestGetUserNotFoundRoute(t *testing.T) {
 
 func TestPostUserRoute(t *testing.T) {
 	initialUsers := getMockUsers()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 
 	newUser := models.UserReq{
 		Name:     "User Test",
@@ -262,13 +234,8 @@ func TestPostUserRoute(t *testing.T) {
 
 func TestPutUserRoute(t *testing.T) {
 	initialUsers := getMockUsersWithSessions()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 
 	newUser := models.UserReq{
 		Name:     "User Test",
@@ -310,13 +277,8 @@ func TestPutUserRoute(t *testing.T) {
 
 func TestDeleteUserRoute(t *testing.T) {
 	initialUsers := getMockUsersWithSessions()
-	usersRepo := repositories.NewMockUsersController(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsController(&initialUsers)
-	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
-	usersService := services.NewUsersService(usersRepo)
-	usersController := controllers.NewUsersController(usersService, sessionsService)
-	statusController := controllers.NewStatusController()
-	router := startup.SetupRouter(statusController, usersController)
+	initialBirthdays := make([]models.Birthday, 0)
+	router := setupTestRouter(&initialUsers, &initialBirthdays)
 
 	deleteRecorder := httptest.NewRecorder()
 	deleteReq, _ := http.NewRequest(http.MethodDelete, "/api/users/me", nil)
