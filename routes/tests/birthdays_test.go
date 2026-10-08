@@ -10,56 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-const aliceAccessToken = "8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI"
-
-func getMockBirthdays() []models.Birthday {
-	return []models.Birthday{
-		{
-			ID:           uuid.MustParse("44444444-4444-4444-4444-444444444444"),
-			Name:         "Kaia Ngata",
-			Birthdate:    time.Date(2000, time.January, 15, 0, 0, 0, 0, time.UTC),
-			Timezone:     "Pacific/Auckland",
-			ContactLinks: []string{},
-			Wishlists:    []string{"https://example.com/wishlist/kaia"},
-			Events:       []uuid.UUID{},
-		},
-		{
-			ID:           uuid.MustParse("55555555-5555-5555-5555-555555555555"),
-			Name:         "Leap Day Friend",
-			Birthdate:    time.Date(2000, time.February, 29, 0, 0, 0, 0, time.UTC),
-			Timezone:     "Pacific/Auckland",
-			ContactLinks: []string{},
-			Wishlists:    []string{},
-			Events:       []uuid.UUID{},
-		},
-		{
-			ID:           uuid.MustParse("66666666-6666-6666-6666-666666666666"),
-			Name:         "Bob's Contact",
-			Birthdate:    time.Date(2000, time.March, 10, 0, 0, 0, 0, time.UTC),
-			Timezone:     "Europe/Lisbon",
-			ContactLinks: []string{},
-			Wishlists:    []string{},
-			Events:       []uuid.UUID{},
-		},
-	}
-}
-
-func getMockUsersWithBirthdays() []models.User {
-	users := getMockUsersWithSessions()
-	users[0].Birthdays = []string{
-		"44444444-4444-4444-4444-444444444444",
-		"55555555-5555-5555-5555-555555555555",
-	}
-	users[1].Birthdays = []string{
-		"66666666-6666-6666-6666-666666666666",
-	}
-	return users
-}
 
 func TestGetBirthdaysRoute(t *testing.T) {
 	initialUsers := getMockUsersWithBirthdays()
@@ -79,8 +32,8 @@ func TestGetBirthdaysRoute(t *testing.T) {
 			"name": "Kaia Ngata",
 			"birthdate": "2000-01-15T00:00:00Z",
 			"timezone": "Pacific/Auckland",
-			"contactLinks": [],
-			"wishlists": ["https://example.com/wishlist/kaia"],
+			"contactLinks": ["#kaina_555", "kaina@"],
+			"wishlists": ["https://example.com/wishlist/kaia", "https://steamapps.com/wishlist/kaia"],
 			"events": [],
 			"startDate": "2026-01-14T06:00:00-05:00",
 			"endDate": "2026-01-15T06:00:00-05:00"
@@ -118,8 +71,8 @@ func TestGetBirthdayRoute(t *testing.T) {
 		"name": "Kaia Ngata",
 		"birthdate": "2000-01-15T00:00:00Z",
 		"timezone": "Pacific/Auckland",
-		"contactLinks": [],
-		"wishlists": ["https://example.com/wishlist/kaia"],
+		"contactLinks": ["#kaina_555", "kaina@"],
+		"wishlists": ["https://example.com/wishlist/kaia", "https://steamapps.com/wishlist/kaia"],
 		"events": [],
 		"startDate": "2026-01-14T06:00:00-05:00",
 		"endDate": "2026-01-15T06:00:00-05:00"

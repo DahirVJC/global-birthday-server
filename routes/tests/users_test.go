@@ -4,88 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"global-birthday-server/models"
-	"global-birthday-server/utilities"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"sort"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/google/uuid"
 )
-
-func getMockUsers() []models.User {
-	return []models.User{
-		{
-			ID:        uuid.MustParse("11111111-1111-1111-1111-111111111111"),
-			Name:      "Alice Nguyen",
-			Password:  "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
-			Email:     "alice.nguyen@example.com",
-			Timezone:  "America/New_York",
-			Birthdays: nil,
-			Sessions:  nil,
-		},
-		{
-			ID:        uuid.MustParse("22222222-2222-2222-2222-222222222222"),
-			Name:      "Bob Mercado",
-			Password:  "$2a$10$X7trdoO6c2Ym0XWR1vNXVeWbnqZ6yNlTeqrMc0BpeDBMdCvQRtszi",
-			Email:     "bob.mercado@example.com",
-			Timezone:  "Europe/Lisbon",
-			Birthdays: nil,
-			Sessions:  nil,
-		},
-		{
-			ID:        uuid.MustParse("33333333-3333-3333-3333-333333333333"),
-			Name:      "Chiemi Tanaka",
-			Password:  "$2a$10$cZ4gVKFmqkhRRRUnA5MTYuQcwBTmEQT3wjQMxjOkCEwp0GT2EfZ1O",
-			Email:     "chiemi.tanaka@example.co.jp",
-			Timezone:  "Asia/Tokyo",
-			Birthdays: nil,
-			Sessions:  nil,
-		},
-	}
-}
-
-func getMockUsersWithSessions() []models.User {
-	return []models.User{
-		{
-			ID:        uuid.MustParse("11111111-1111-1111-1111-111111111111"),
-			Name:      "Alice Nguyen",
-			Password:  "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
-			Email:     "alice.nguyen@example.com",
-			Timezone:  "America/New_York",
-			Birthdays: nil,
-			Sessions: []models.Session{
-				{
-					ID:          uuid.MustParse("33333333-3333-3333-3333-333333333333"),
-					AccessToken: utilities.ToHash("8e1jgIYXjcoHvNDFmvKff0RPQBFGtZZl4nqK4u_OkRI"),
-					CreatedAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC),
-					ExpiresAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC).Add(90 * 24 * time.Hour),
-				},
-			},
-		},
-		{
-			ID:        uuid.MustParse("22222222-2222-2222-2222-222222222222"),
-			Name:      "Bob Mercado",
-			Password:  "$2a$10$X7trdoO6c2Ym0XWR1vNXVeWbnqZ6yNlTeqrMc0BpeDBMdCvQRtszi",
-			Email:     "bob.mercado@example.com",
-			Timezone:  "Europe/Lisbon",
-			Birthdays: nil,
-			Sessions: []models.Session{
-				{
-					ID:          uuid.MustParse("d3b07384-0c23-4e7a-8c9b-2c4a5f6e7b9c"),
-					AccessToken: utilities.ToHash("Z_TIeQlFa-KqzusUn5div552Rt-cND7vlBOB8fFbR4s"),
-					CreatedAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC),
-					ExpiresAt:   time.Date(2030, time.January, 15, 12, 0, 0, 0, time.UTC).Add(90 * 24 * time.Hour),
-				},
-			},
-		},
-	}
-}
 
 func TestGetUsersRoute(t *testing.T) {
 	initialUsers := getMockUsers()
