@@ -1,4 +1,4 @@
-package main
+package routes_tests
 
 import (
 	"global-birthday-server/controllers"
@@ -6,24 +6,20 @@ import (
 	"global-birthday-server/repositories"
 	"global-birthday-server/services"
 	"global-birthday-server/startup"
+
+	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	startup.LoadEnvironment()
-
-	statusController := controllers.NewStatusController()
-
-	initialUsers := make([]models.User, 0)
-	initialBirthdays := make([]models.Birthday, 0)
-	usersRepo := repositories.NewMockUsersRepository(&initialUsers)
-	sessionsRepo := repositories.NewMockSessionsRepository(&initialUsers)
-	birthdaysRepo := repositories.NewMockBirthdaysRepository(&initialBirthdays)
+func setupTestRouter(users *[]models.User, birthdays *[]models.Birthday) *gin.Engine {
+	usersRepo := repositories.NewMockUsersRepository(users)
+	sessionsRepo := repositories.NewMockSessionsRepository(users)
+	birthdaysRepo := repositories.NewMockBirthdaysRepository(birthdays)
 	sessionsService := services.NewSessionsService(sessionsRepo, usersRepo)
 	usersService := services.NewUsersService(usersRepo)
 	birthdaysService := services.NewBirthdaysService(birthdaysRepo, usersRepo)
 	usersController := controllers.NewUsersController(usersService, sessionsService)
 	birthdaysController := controllers.NewBirthdaysController(birthdaysService, sessionsService)
+	statusController := controllers.NewStatusController()
 
-	router := startup.SetupRouter(statusController, usersController, birthdaysController)
-	startup.StartRouter(router)
+	return startup.SetupRouter(statusController, usersController, birthdaysController)
 }

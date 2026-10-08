@@ -12,7 +12,7 @@ type MockSessionsRepository struct {
 	users *[]models.User
 }
 
-func NewMockSessionsController(initialUsers *[]models.User) MockSessionsRepository {
+func NewMockSessionsRepository(initialUsers *[]models.User) MockSessionsRepository {
 	return MockSessionsRepository{
 		users: initialUsers,
 	}
