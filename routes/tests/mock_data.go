@@ -42,6 +42,44 @@ func getMockBirthdays() []models.Birthday {
 	}
 }
 
+func getMockBirthdaysWithEvents() []models.Birthday {
+	birthdays := getMockBirthdays()
+	birthdays[0].Events = []uuid.UUID{
+		uuid.MustParse("88888888-8888-8888-8888-888888888888"),
+		uuid.MustParse("99999999-9999-9999-9999-999999999999"),
+	}
+	birthdays[2].Events = []uuid.UUID{
+		uuid.MustParse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+	}
+	return birthdays
+}
+
+func getMockEvents() []models.Event {
+	pastEnd := time.Date(2020, time.January, 16, 14, 0, 0, 0, time.UTC)
+	futureEnd := time.Date(2030, time.January, 16, 14, 0, 0, 0, time.UTC)
+	pastDescription := "Past party"
+	futureDescription := "Kaia party"
+
+	return []models.Event{
+		{
+			ID:             uuid.MustParse("88888888-8888-8888-8888-888888888888"),
+			EventDateStart: time.Date(2020, time.January, 16, 12, 0, 0, 0, time.UTC),
+			EventDateEnd:   &pastEnd,
+			Description:    &pastDescription,
+		},
+		{
+			ID:             uuid.MustParse("99999999-9999-9999-9999-999999999999"),
+			EventDateStart: time.Date(2030, time.January, 16, 12, 0, 0, 0, time.UTC),
+			EventDateEnd:   &futureEnd,
+			Description:    &futureDescription,
+		},
+		{
+			ID:             uuid.MustParse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+			EventDateStart: time.Date(2030, time.March, 10, 18, 0, 0, 0, time.UTC),
+		},
+	}
+}
+
 func getMockUsersWithBirthdays() []models.User {
 	users := getMockUsersWithSessions()
 	users[0].Birthdays = []string{
