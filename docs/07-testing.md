@@ -20,3 +20,12 @@ The routes/test folder contains test files for each route in routes. All of thos
     - `TestPostBirthdayRoute`: Creates a birthday via POST /api/birthday/ and retrieves it with GET /api/birthday/{Year} to check persisted fields and year normalization
     - `TestPutBirthdayRoute`: Modifies a birthday and retrieves it to validate the data changes
     - `TestDeleteBirthdayRoute`: Deletes a birthday and attempts to fetch it; if it returns a 404 Not Found status, the test is successful
+- `events_test`
+    - `TestGetEventsRoute`: Makes a GET request to /api/event/ with a valid access token and verifies that past events are omitted and intervals are converted to the user's timezone
+    - `TestGetEventsIncludingPastRoute`: Makes a GET request to /api/event/?past=true and verifies that past events are included
+    - `TestGetEventRoute`: Performs a GET request to /api/event/{id} and verifies the processed event
+    - `TestGetEventNotFoundRoute`: Performs a GET request for a missing event ID and verifies that it returns a 404 HTTP status
+    - `TestGetEventForbiddenAsNotFoundRoute`: Performs a GET request for another user's event and verifies that it returns a 404 HTTP status
+    - `TestPostEventRoute`: Creates an event via POST /api/event/ and retrieves it with GET /api/event/ to check persisted fields, timezone conversion, and the birthday event reference
+    - `TestPutEventRoute`: Modifies an event and retrieves it to validate the data changes
+    - `TestDeleteEventRoute`: Deletes an event and attempts to fetch it; if it returns a 404 Not Found status, the test is successful

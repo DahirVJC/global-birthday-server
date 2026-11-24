@@ -10,10 +10,12 @@ func RegisterRoutes(
 	router *gin.Engine,
 	statusController *controllers.StatusController,
 	usersController *controllers.UsersController,
-	birthdaysController *controllers.BirthdaysController) {
+	birthdaysController *controllers.BirthdaysController,
+	eventsController *controllers.EventsController) {
 	api := router.Group("/api")
 
 	RegisterStatusRoutes(api, statusController)
 	RegisterUsersRoutes(api, usersController)
 	RegisterBirthdaysRoutes(api, birthdaysController)
+	RegisterEventsRoutes(api, eventsController)
 }

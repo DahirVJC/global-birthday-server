@@ -10,7 +10,8 @@ import (
 func SetupRouter(
 	statusController *controllers.StatusController,
 	usersController *controllers.UsersController,
-	birthdaysController *controllers.BirthdaysController) *gin.Engine {
+	birthdaysController *controllers.BirthdaysController,
+	eventsController *controllers.EventsController) *gin.Engine {
 	router := gin.Default()
 
 	routes.RegisterRoutes(
@@ -18,6 +19,7 @@ func SetupRouter(
 		statusController,
 		usersController,
 		birthdaysController,
+		eventsController,
 	)
 
 	return router
