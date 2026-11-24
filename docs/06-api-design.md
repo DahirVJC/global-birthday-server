@@ -71,7 +71,7 @@
 - `GET` `event/{id}`:
   - Receives a valid access token
   - Receives the event's ID
-  - Converts the event for the given year to a time interval represented by a start and end date in the users' timezone
+  - Converts the event for the given ID to a time interval represented by a start and end date in the users' timezone
   - Returns the processed event for the user
   - Returns 404 if the event doesn't exist
   - Returns 404 if the event belongs to another user
